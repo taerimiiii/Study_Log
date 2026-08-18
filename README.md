@@ -7,7 +7,7 @@
 ```text
 Study_Log
 ├── Backend/
-│   └── modern_java/
+│   └── Modern_Java/
 ├── image/
 └── README.md
 ```
