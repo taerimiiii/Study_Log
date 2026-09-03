@@ -1,6 +1,15 @@
 # [5장] 스트림 활용
 
-이번 장에서는 필터링, 슬라이싱, 검색, 매칭, 매핑, 리듀싱 등 다양한 패턴을 살펴본다
+💡 노션에서 더 가독성 좋게 확인 가능합니다! *([🔗노션 페이지에서 보기](https://hyper-noise-b36.notion.site/5-3d0c2d48bf008078a836eb13dba93830))*
+
+### 5.0 서문
+> 
+> 
+> 
+> 이 장에서는 필터링, 슬라이싱, 검색, 매칭, 매핑, 리듀싱 등 다양한 패턴을 살펴봅니다.
+> 
+
+---
 
 ## 5.1 필터링
 
@@ -13,7 +22,10 @@
 > 
 
 ```java
-// 모든 채식 요리를 필터링 하는 코드 예제 추가
+// 모든 채식 요리를 필터링 하는 코드
+List<Dish> vegetarianMenu = menu.stream()
+    .filter(Dish::isVegetarian)
+    .collect(toList());
 ```
 
 - 프레디케이스를 인수로 받아서,
@@ -28,7 +40,12 @@
 > 
 
 ```java
-// 모든 짝수를 선택하고 중복을 필터링하는 코드 예제 추가
+// 모든 짝수를 선택하고 중복을 필터링하는 코드
+List<Integer> numbers = Arrays.asList(1, 2, 1, 3, 3, 2, 4);
+numbers.stream()
+    .filter(i -> i % 2 == 0)
+    .distinct()
+    .forEach(System.out::println);
 ```
 
 - filter + 중복 제외
@@ -46,7 +63,10 @@
 > 
 
 ```java
-// 320칼로리 이하의 요리를 선택하는 코드 추가
+// 320칼로리 이하의 요리를 선택하는 코드
+List<Dish> slicedMenu1 = specialMenu.stream()
+    .takeWhile(dish -> dish.getCalories() < 320)
+    .collect(toList());
 ```
 
 - filter VS takeWhile
@@ -63,7 +83,10 @@
 > 
 
 ```java
-// 320칼로리 보다 큰 요소 선택 코드 추가
+// 320칼로리 보다 큰 요소(나머지 요소) 선택 코드
+List<Dish> slicedMenu2 = specialMenu.stream()
+    .dropWhile(dish -> dish.getCalories() < 320)
+    .collect(toList());
 ```
 
 - takeWhile과 정반대
@@ -78,7 +101,11 @@
 > 
 
 ```java
-// 300 칼로리 이상의 세 요리를 선택하는 코드 예제 추가
+// 300 칼로리 이상의 세 요리를 선택하는 코드
+List<Dish> dishesLimit3 = menu.stream()
+    .filter(d -> d.getCalories() > 300)
+    .limit(3)
+    .collect(toList());
 ```
 
 - 주어진 값 이하의 크기를 갖는 새로운 스트림을 반환
@@ -93,6 +120,10 @@
 
 ```java
 // 300 칼로리 이상의 첫 두 요리를 건너뛴 다음에 300 칼로리가 넘는 나머지 요리 반환
+List<Dish> dishesSkip2 = menu.stream()
+    .filter(d -> d.getCalories() > 300)
+    .skip(2)
+    .collect(toList());
 ```
 
 - 처음 n개의 요소를 제외한 스트림을 반환
@@ -108,7 +139,15 @@
 > 
 
 ```java
-// 스트림의 각 요리명 길이 추출 코드 예제 추가
+// 스트림의 각 요리명 추출 및 단어 길이 추출 코드
+List<String> dishNames = menu.stream()
+    .map(Dish::getName)
+    .collect(toList());
+
+List<String> words = Arrays.asList("Hello", "World");
+List<Integer> wordLengths = words.stream()
+    .map(String::length)
+    .collect(toList());
 ```
 
 - 함수를 인수로 받음
@@ -125,7 +164,11 @@ A. “변환”은 ‘고친다’에 가깝고, “매핑”은 ‘새로운 �
 [”Hello”, “World”] 리스트의 고유 문자 리스트를 반환해 보자.
 
 ```java
-// map과 distinct를 활용한 잘못된 코드 추가
+// map과 distinct를 활용한 잘못된 코드
+List<String[]> uniqueCharacters = words.stream()
+    .map(word -> word.split("")) // 결과로 Stream<String[]> 반환
+    .distinct()
+    .collect(toList());
 ```
 
 map이 반환한 스트림 형식은 Stream<String[]> 이다.
@@ -141,7 +184,11 @@ A. **flatMap**을 사용한다!!
 > 
 
 ```java
-// [”Hello”, “World”] 리스트의 고유 문자 리스트 반환 코드 추가
+// [”Hello”, “World”] 리스트의 고유 문자 리스트 반환 코드[cite: 9]
+words.stream()
+    .flatMap((String line) -> Arrays.stream(line.split("")))
+    .distinct()
+    .forEach(System.out::println);
 ```
 
 - 생성된 리스트를 하나의 스트림으로 **평면화** 한다.
@@ -161,7 +208,8 @@ A. **flatMap**을 사용한다!!
 > 
 
 ```java
-// menu에 채식 요리가 있는지 확인하는 예제 코드 3줄 이내로 추가
+// menu에 채식 요리가 있는지 확인하는 예제
+boolean isVegetarianFriendlyMenu = menu.stream().anyMatch(Dish::isVegetarian);
 ```
 
 - **적어도** 한 요소와 **일치**하는지 확인 할 때 사용.
@@ -176,7 +224,8 @@ A. **flatMap**을 사용한다!!
 > 
 
 ```java
-// 모든 요리가 1000 칼로리 이하인지 확인하는 예제 코드 3줄 이내로 추가
+// 모든 요리가 1000 칼로리 이하인지 확인하는 코드
+boolean isHealthyMenu = menu.stream().allMatch(d -> d.getCalories() < 1000);
 ```
 
 - **모든** 요소가 주어진 프레디케이트와 **일치**하는지 검사
@@ -189,7 +238,8 @@ A. **flatMap**을 사용한다!!
 > 
 
 ```java
-// allMatch 예제 코드에서 메서드만 nonMatch로 바꾼 코드 추가
+// allMatch 예제 코드에서 메서드만 noneMatch로 바꾼 코드
+boolean isHealthyMenu2 = menu.stream().noneMatch(d -> d.getCalories() >= 1000);
 ```
 
 - **모든** 요소가 주어진 프레디케이트와 **불일치**하는지 검사
@@ -215,7 +265,10 @@ A. 모든 스트림의 요소를 처리하지 않고도 결과를 반환할 수 
 > 
 
 ```java
-// 채식 요리 선택하는 코드 추가. Optional 쓸 것.
+// 채식 요리 선택하는 코드
+Optional<Dish> dish = menu.stream()
+    .filter(Dish::isVegetarian)
+    .findAny();
 ```
 
 - **임의**의 요소를 반환
@@ -245,7 +298,12 @@ findAny는 아무 요소도 반환하지 않을 수 있다.
 > 
 
 ```java
-// 숫자 리스트에서 3으로 나누어 떨어지는 첫 번째 제곱값을 반환하는 코드 추가
+// 숫자 리스트에서 3으로 나누어 떨어지는 첫 번째 제곱값을 반환하는 코드
+List<Integer> someNumbers = Arrays.asList(1, 2, 3, 4, 5);
+Optional<Integer> firstSquareDivisibleByThree = someNumbers.stream()
+    .map(n -> n * n)
+    .filter(n -> n % 3 == 0)
+    .findFirst();
 ```
 
 - 논리적인 아이템 순서가 정해져 있을 때, **첫 번째 요소**를 찾고자 할 때 사용한다.
@@ -347,12 +405,93 @@ stream()을 parallelStream()으로 바꾸면 스트림의 모든 요소를 더�
 
 ```java
 // 거래자 리스트와 트랜잭션 리스트 데이터들 선언
+Trader raoul = new Trader("Raoul", "Cambridge");
+Trader mario = new Trader("Mario", "Milan");
+Trader alan = new Trader("Alan", "Cambridge");
+Trader brian = new Trader("Brian", "Cambridge");
+
+List<Transaction> transactions = Arrays.asList(
+    new Transaction(brian, 2011, 300),
+    new Transaction(raoul, 2012, 1000),
+    new Transaction(raoul, 2011, 400),
+    new Transaction(mario, 2012, 710),
+    new Transaction(mario, 2012, 700),
+    new Transaction(alan, 2012, 950)
+);
 
 // Trader와 Transaction 클래스 정의 선언
+public class Trader {
+  private String name;
+  private String city;
+  public Trader(String n, String c) {
+    this.name = n;
+    this.city = c;
+  }
+  public String getName() { return name; }
+  public String getCity() { return city; }
+}
+
+public class Transaction {
+  private Trader trader;
+  private int year;
+  private int value;
+  public Transaction(Trader trader, int year, int value) {
+    this.trader = trader;
+    this.year = year;
+    this.value = value;
+  }
+  public Trader getTrader() { return trader; }
+  public int getYear() { return year; }
+  public int getValue() { return value; }
+}
 ```
 
 ### 5.6.2 실전 연습 정답
 
 ```java
-문제 1번~ 8번 코드 추가. 주석 꼼꼼히 달아줄 것.
+// 2011년부터 발생한 모든 거래를 찾아 값으로 정렬(작은 값에서 큰 값)
+List<Transaction> tr2011 = transactions.stream()
+    .filter(transaction -> transaction.getYear() == 2011)
+    .sorted(comparing(Transaction::getValue))
+    .collect(toList());
+
+// 거래자가 근무하는 모든 고유 도시는?
+List<String> cities = transactions.stream()
+    .map(transaction -> transaction.getTrader().getCity())
+    .distinct()
+    .collect(toList());
+
+// Cambridge의 모든 거래자를 찾아 이름으로 정렬.
+List<Trader> traders = transactions.stream()
+    .map(Transaction::getTrader)
+    .filter(trader -> trader.getCity().equals("Cambridge"))
+    .distinct()
+    .sorted(comparing(Trader::getName))
+    .collect(toList());
+
+// 알파벳 순으로 정렬된 모든 거래자의 이름 문자열을 반환
+String traderStr = transactions.stream()
+    .map(transaction -> transaction.getTrader().getName())
+    .distinct()
+    .sorted()
+    .reduce("", (n1, n2) -> n1 + n2);
+
+// Milan에 거주하는 거래자가 있는가?
+boolean milanBased = transactions.stream()
+    .anyMatch(transaction -> transaction.getTrader().getCity().equals("Milan"));
+
+// Cambridge에 사는 거래자의 모든 거래내역 출력.
+transactions.stream()
+    .filter(t -> "Cambridge".equals(t.getTrader().getCity()))
+    .map(Transaction::getValue)
+    .forEach(System.out::println);
+
+// 모든 거래에서 최고값은 얼마인가?
+int highestValue = transactions.stream()
+    .map(Transaction::getValue)
+    .reduce(0, Integer::max);
+
+// 가장 작은 값을 가진 거래 탐색
+Optional<Transaction> smallestTransaction = transactions.stream()
+    .min(comparing(Transaction::getValue));
 ```
