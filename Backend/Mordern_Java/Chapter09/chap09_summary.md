@@ -1,5 +1,7 @@
 # [9장] 리펙터링, 테스팅, 디버깅
 
+💡 노션에서 더 가독성 좋게 확인 가능합니다! *([🔗노션 페이지에서 보기](https://hyper-noise-b36.notion.site/9-3ebc2d48bf008005a76df50ab0f6acf7))*
+
 <aside>
 📖
 

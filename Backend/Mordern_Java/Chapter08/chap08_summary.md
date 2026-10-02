@@ -1,5 +1,7 @@
 # [8장] 컬렉션 API 개선
 
+💡 노션에서 더 가독성 좋게 확인 가능합니다! *([🔗노션 페이지에서 보기](https://hyper-noise-b36.notion.site/8-API-3ebc2d48bf0080e6b154e1d1a18a15ab))*
+
 <aside>
 
 8장에서는 새로운 컬렉션 API 기능을 배운다!
