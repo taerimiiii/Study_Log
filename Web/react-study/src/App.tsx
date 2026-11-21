@@ -1,12 +1,21 @@
-import { useState } from 'react'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-   <h1>태림양의 React 학습</h1>
-  )
+function MovieTitle() {
+  return <h2>오디세이</h2>;
 }
 
-export default App
+function MovieCard() {
+  return (
+    <article>
+      <MovieTitle />
+      <p>2026.08.05</p>
+    </article>
+  );
+}
+
+export default function App() {
+  return (
+    <main>
+      <h1>영화 목록</h1>
+      <MovieCard />
+    </main>
+  );
+}

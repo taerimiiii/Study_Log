@@ -1,0 +1,19 @@
+@import url('https://spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css');
+@import 'tailwindcss';
+
+@theme {
+  --font-spoqa: 'Spoqa Han Sans Neo', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --font-sf: -apple-system, 'SF Pro Text', BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --color-screen: #fefefe;
+  --color-brand: #ffd900;
+  --color-brand-point: #eac700;
+  --color-naver: #01c73c;
+  --color-sub: #666666;
+  --color-line: #d9d9d9;
+}
+
+body {
+  margin: 0;
+  background: #f2f2f2;
+}
